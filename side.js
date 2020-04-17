@@ -1,7 +1,7 @@
 const APP_ID = '3074457347596948293';
 let miro = window.miro;
 
-const staticUrl = 'http://tough-bullfrog-87.serverless.social';
+const staticUrl = 'https://dosyara.github.io/miro-plugin-deck';
 
 const deck36 = [
   'A_c',
