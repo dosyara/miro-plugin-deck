@@ -122,8 +122,6 @@ async function deal(n = 1) {
 }
 
 async function take() {
-  console.log('take');
-
   document.querySelector('.take').disabled = true;
 
   const [player] = await miro.board.widgets.get({
@@ -156,7 +154,7 @@ async function take() {
 
   await renderHand();
 
-  document.querySelector('.take').disabled = true;
+  document.querySelector('.take').disabled = false;
 }
 
 async function discard() {
@@ -348,8 +346,6 @@ window.addEventListener('DOMContentLoaded', (event) => {
     miro.board.ui.initDraggableItemsContainer(document.querySelector('.hand'), options);
 
     userId = await miro.currentUser.getId();
-
-    console.log(userId);
 
     await init();
     await renderHand();
