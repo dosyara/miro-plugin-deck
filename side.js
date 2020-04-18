@@ -280,7 +280,7 @@ async function flip() {
       x: card.x,
       y: card.y,
       cardImgId: card.metadata[APP_ID].cardId,
-      data: { cardId: card.metadata[APP_ID].cardId, onTable: true, isOpen: true },
+      data: { cardId: card.metadata[APP_ID].cardId, inDeck: true, isOpen: true },
     }))
   );
 
