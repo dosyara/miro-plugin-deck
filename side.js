@@ -378,7 +378,7 @@ async function renderControls() {
 
     document.querySelector('#start36').addEventListener('click', () => start(deck36));
     document.querySelector('#start54').addEventListener('click', () => start(deck54));
-    document.querySelector('#start108').addEventListener('click', () => start([...deck54, deck54]));
+    document.querySelector('#start108').addEventListener('click', () => start([...deck54, ...deck54]));
     document.querySelector('#deal').addEventListener('click', () => {
       deal(parseInt(document.querySelector('#numCards').value, 10));
     });
