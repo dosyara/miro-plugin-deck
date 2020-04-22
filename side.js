@@ -175,10 +175,9 @@ async function deal(n = 1, perPlayer = false) {
   await miro.board.widgets.transformDelta(cardsToDeal, 0 - cardsToDeal[0].x, 0 - cardsToDeal[0].y);
 
   cardsToDeal.forEach((card, i) => {
-    console.log(i, Math.floor(i / n));
     let p = players[Math.floor(i / n)];
     card.x = perPlayer ? p.x + getRandomBetween(-30, 30) : i * 100;
-    card.y = getRandomBetween(-30, 30);
+    card.y = perPlayer ? p.y + getRandomBetween(-30, 30) : getRandomBetween(-30, 30);
     card.metadata = {
       [APP_ID]: perPlayer
         ? {
@@ -310,6 +309,8 @@ async function reset() {
   });
 
   await miro.board.widgets.deleteById(cards);
+
+  miro.broadcastData({ renderHand: true }); 
 }
 
 function createCardWidget({ x = 0, y = 0, r = getRandomBetween(-15, 15), cardImgId = 'back', data = {} }) {
