@@ -159,12 +159,18 @@ async function join() {
   console.log('ok');
 }
 
-async function deal(n = 1) {
+async function deal(n = 1, perPlayer = false) {
+  const players = await miro.board.widgets.get({
+    type: 'text',
+    metadata: { [APP_ID]: { isPlayer: true } },
+  });
+
   const cards = await miro.board.widgets.get({
     type: 'image',
     metadata: { [APP_ID]: { inDeck: true } },
   });
-  const cardsToDeal = cards.slice(0, n);
+
+  const cardsToDeal = cards.slice(0, n * (perPlayer ? players.length : 1));
 
   miro.board.widgets.transformDelta(cardsToDeal, 0 - cardsToDeal[0].x, 0 - cardsToDeal[0].y);
 
@@ -172,10 +178,16 @@ async function deal(n = 1) {
     card.x = i * 100;
     card.y = getRandomBetween(-30, 30);
     card.metadata = {
-      [APP_ID]: {
-        onTable: true,
-        cardId: card.metadata[APP_ID].cardId,
-      },
+      [APP_ID]: perPlayer
+        ? {
+            player: players[Math.floor(i / n)].metadata[APP_ID].player,
+            inHand: true,
+            cardId: card.metadata[APP_ID].cardId,
+          }
+        : {
+            onTable: true,
+            cardId: card.metadata[APP_ID].cardId,
+          },
     };
   });
 
@@ -367,7 +379,7 @@ async function renderControls() {
       <button id="start108">start 108</button>
       <button id="reset">reset</button>
       <br />
-      <input type="number" id="numCards" value="1"/><button id="deal">deal</button>
+      <input type="checkbox" id="perPlayer"/><input type="number" id="numCards" value="1"/><button id="deal">deal</button>
       <br />
       <button id="flip">flip</button>
       <button id="discard">discard</button>
@@ -380,7 +392,7 @@ async function renderControls() {
     document.querySelector('#start54').addEventListener('click', () => start(deck54));
     document.querySelector('#start108').addEventListener('click', () => start([...deck54, ...deck54]));
     document.querySelector('#deal').addEventListener('click', () => {
-      deal(parseInt(document.querySelector('#numCards').value, 10));
+      deal(parseInt(document.querySelector('#numCards').value, 10), document.querySelector('#perPlayer').checked);
     });
     document.querySelector('#flip').addEventListener('click', flip);
     document.querySelector('#discard').addEventListener('click', discard);
