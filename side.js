@@ -175,12 +175,13 @@ async function deal(n = 1, perPlayer = false) {
   miro.board.widgets.transformDelta(cardsToDeal, 0 - cardsToDeal[0].x, 0 - cardsToDeal[0].y);
 
   cardsToDeal.forEach((card, i) => {
-    card.x = i * 100;
+    let p = players[Math.floor(i / n)];
+    card.x = perPlayer ? p.x + getRandomBetween(-30, 30) : i * 100;
     card.y = getRandomBetween(-30, 30);
     card.metadata = {
       [APP_ID]: perPlayer
         ? {
-            player: players[Math.floor(i / n)].metadata[APP_ID].player,
+            player: p.metadata[APP_ID].player,
             inHand: true,
             cardId: card.metadata[APP_ID].cardId,
           }
