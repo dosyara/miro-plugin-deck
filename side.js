@@ -194,7 +194,7 @@ async function deal(n = 1, perPlayer = false) {
 
   miro.board.widgets.update(cardsToDeal);
 
-  miro.board.broadcastData({ renderHand: true });
+  miro.broadcastData({ renderHand: true });
 }
 
 async function take() {
