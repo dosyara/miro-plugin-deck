@@ -172,9 +172,10 @@ async function deal(n = 1, perPlayer = false) {
 
   const cardsToDeal = cards.slice(0, n * (perPlayer ? players.length : 1));
 
-  miro.board.widgets.transformDelta(cardsToDeal, 0 - cardsToDeal[0].x, 0 - cardsToDeal[0].y);
+  await miro.board.widgets.transformDelta(cardsToDeal, 0 - cardsToDeal[0].x, 0 - cardsToDeal[0].y);
 
   cardsToDeal.forEach((card, i) => {
+    console.log(i, Math.floor(i / n));
     let p = players[Math.floor(i / n)];
     card.x = perPlayer ? p.x + getRandomBetween(-30, 30) : i * 100;
     card.y = getRandomBetween(-30, 30);
@@ -192,7 +193,7 @@ async function deal(n = 1, perPlayer = false) {
     };
   });
 
-  miro.board.widgets.update(cardsToDeal);
+  await miro.board.widgets.update(cardsToDeal);
 
   miro.broadcastData({ renderHand: true });
 }
@@ -206,7 +207,7 @@ async function take() {
   });
   const selected = (await miro.board.selection.get()).filter(({ metadata }) => metadata[APP_ID].onTable);
 
-  miro.board.widgets.transformDelta(selected, player.x, player.y);
+  await miro.board.widgets.transformDelta(selected, player.x, player.y);
 
   const cards = await miro.board.widgets.get({
     type: 'image',
@@ -241,7 +242,7 @@ async function discard() {
 
   if (!cards.length) return;
 
-  miro.board.widgets.transformDelta(cards, -cards[0].x, 3000 - cards[0].y);
+  await miro.board.widgets.transformDelta(cards, -cards[0].x, 3000 - cards[0].y);
 
   cards.forEach((card) => {
     card.x = getRandomBetween(-10, 10);
@@ -264,7 +265,7 @@ async function play(cardId, canvasX = 0, canvasY = 0, inHidden) {
     metadata: { [APP_ID]: { player: userId, inHand: true, cardId } },
   });
 
-  miro.board.widgets.transformDelta([card], canvasX - card.x, canvasY - card.y);
+  await miro.board.widgets.transformDelta([card], canvasX - card.x, canvasY - card.y);
 
   if (inHidden) {
     await createCardWidget({
@@ -437,8 +438,9 @@ window.addEventListener('DOMContentLoaded', (event) => {
     miro.board.ui.initDraggableItemsContainer(document.querySelector('.hand'), options);
 
     miro.addListener('DATA_BROADCASTED', async (e) => {
-      console.log(e);
-      await renderHand();
+      if (e.data && e.data.renderHand) {
+        await renderHand();
+      }
     });
 
     userId = await miro.currentUser.getId();
