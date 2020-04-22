@@ -193,6 +193,8 @@ async function deal(n = 1, perPlayer = false) {
   });
 
   miro.board.widgets.update(cardsToDeal);
+
+  miro.board.broadcastData({ renderHand: true });
 }
 
 async function take() {
@@ -433,6 +435,11 @@ window.addEventListener('DOMContentLoaded', (event) => {
     console.log('init', miro);
 
     miro.board.ui.initDraggableItemsContainer(document.querySelector('.hand'), options);
+
+    miro.addListener('DATA_BROADCASTED', async (e) => {
+      console.log(e);
+      await renderHand();
+    });
 
     userId = await miro.currentUser.getId();
 
